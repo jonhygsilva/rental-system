@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:rentalsysdb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: 8080
+
+jwt:
+  secret: Y2hhbmdlLXRoaXMtdG8tYS1yZWFsLXNlY3JldC1rZXktaW4tcHJvZHVjdGlvbi1hdC1sZWFzdC0yNTYtYml0cw==
+  expiration: 86400000  # 24 hours in milliseconds
+

@@ -1,19 +1,14 @@
 package com.example.rental.customer.domain.model
 
-/**
- * Pure domain entity — represents a customer address.
- * A customer can have multiple addresses.
- */
 data class Address(
-    val id: Long = 0,
+    val id: Long? = null,
     val street: String,
     val number: String,
-    val complement: String? = null,
+    val complement: String?,
     val neighborhood: String,
     val city: String,
     val state: String,
-    val zipCode: String,
-    val customerId: Long
+    val zipCode: String
 ) {
     init {
         require(street.isNotBlank()) { "Street must not be blank" }
@@ -22,7 +17,5 @@ data class Address(
         require(city.isNotBlank()) { "City must not be blank" }
         require(state.isNotBlank()) { "State must not be blank" }
         require(zipCode.isNotBlank()) { "Zip code must not be blank" }
-        require(customerId > 0) { "customerId must be a positive number" }
     }
 }
-

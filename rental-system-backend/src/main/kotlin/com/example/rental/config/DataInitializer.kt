@@ -2,8 +2,8 @@ package com.example.rental.config
 
 import com.example.rental.user.adapter.outbound.persistence.UserJpaEntity
 import com.example.rental.user.adapter.outbound.persistence.JpaUserRepository
-import com.example.rental.customer.adapter.outbound.persistence.entities.CustomerJpaEntity
-import com.example.rental.customer.adapter.outbound.persistence.repository.JpaCustomerRepository
+import com.example.rental.customer.infrastructure.persistence.entity.CustomerJpaEntity
+import com.example.rental.customer.infrastructure.persistence.repository.JpaCustomerRepository
 import com.example.rental.equipment.adapter.outbound.persistence.EquipmentJpaEntity
 import com.example.rental.equipment.adapter.outbound.persistence.EquipmentJpaStatus
 import com.example.rental.equipment.adapter.outbound.persistence.JpaEquipmentRepository
@@ -76,27 +76,6 @@ class DataInitializer(private val passwordEncoder: PasswordEncoder) {
                 latitude = -23.5589,
                 longitude = -46.6253,
                 dailyRate = BigDecimal("150.00"),
-                userId = user.id
-            )
-        )
-
-        val contrato = contratoRepo.save(
-            ContratoEntity(
-                customerId = c1.id,
-                startDate = LocalDate.now().minusDays(3),
-                endDate = LocalDate.now().plusDays(7),
-                totalValue = BigDecimal("1000.00"),
-                paid = false,
-                userId = user.id
-            )
-        )
-
-        rentalRepo.save(
-            RentalRecordEntity(
-                contratoId = contrato.id,
-                equipamentoId = e1.id,
-                rentedAt = LocalDate.now().minusDays(3),
-                returnedAt = null,
                 userId = user.id
             )
         )

@@ -1,22 +1,19 @@
 package com.example.rental.config
 
-import com.example.rental.user.adapter.outbound.persistence.UserJpaEntity
-import com.example.rental.user.adapter.outbound.persistence.JpaUserRepository
+import com.example.rental.user.infrastructure.persistence.entity.UserJpaEntity
+import com.example.rental.user.infrastructure.persistence.repository.JpaUserRepository
 import com.example.rental.customer.infrastructure.persistence.entity.CustomerJpaEntity
 import com.example.rental.customer.infrastructure.persistence.repository.JpaCustomerRepository
-import com.example.rental.equipment.adapter.outbound.persistence.EquipmentJpaEntity
-import com.example.rental.equipment.adapter.outbound.persistence.EquipmentJpaStatus
-import com.example.rental.equipment.adapter.outbound.persistence.JpaEquipmentRepository
-import com.example.rental.contrato.domain.ContratoEntity
+import com.example.rental.equipment.infrastructure.persistence.entity.EquipmentJpaEntity
+import com.example.rental.equipment.infrastructure.persistence.entity.EquipmentJpaStatus
+import com.example.rental.equipment.infrastructure.persistence.repository.JpaEquipmentRepository
 import com.example.rental.contrato.ContratoRepository
-import com.example.rental.rental.RentalRecordEntity
 import com.example.rental.rental.RentalRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.math.BigDecimal
-import java.time.LocalDate
 
 @Configuration
 class DataInitializer(private val passwordEncoder: PasswordEncoder) {

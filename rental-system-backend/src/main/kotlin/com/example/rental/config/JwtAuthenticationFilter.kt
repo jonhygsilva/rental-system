@@ -1,7 +1,7 @@
 package com.example.rental.config
 
 import com.example.rental.user.application.port.output.JwtTokenPort
-import com.example.rental.user.adapter.outbound.persistence.JpaUserRepository
+import com.example.rental.user.infrastructure.persistence.repository.JpaUserRepository
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

@@ -28,7 +28,7 @@ api.interceptors.response.use(
 
     console.log("API ERROR:", status, url, error.response?.data);
 
-    if (!isAuthRoute && status === 401) {
+    if (!isAuthRoute && (status === 401 || status === 403)) {
       localStorage.removeItem("user");
       window.location.href = "/login";
     }

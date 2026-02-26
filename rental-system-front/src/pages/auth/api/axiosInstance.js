@@ -26,7 +26,7 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const isAuthRoute = url.includes("/login") || url.includes("/register");
 
-    if (!isAuthRoute && status === 401) {
+    if (!isAuthRoute && (status === 401 || status === 403)) {
       localStorage.removeItem("user");
       window.location.href = "/login";
     }

@@ -12,6 +12,7 @@ import { AuthProvider } from "./context/AuthContext";
 import EquipmentList from "./pages/equipments/EquipmentList";
 import EquipmentForm from "./pages/equipments/EquipmentForm";
 import EquipmentEdit from "./pages/equipments/EquipmentEdit";
+import EquipmentView from "./pages/equipments/EquipmentView";
 import RentalsList from "./pages/rentals/RentalsList";
 import RentalForm from "./pages/rentals/RentalForm";
 import RentalEdit from "./pages/rentals/RentalEdit";
@@ -46,7 +47,8 @@ export default function App() {
                     {/* EQUIPMENTS */}
                     <Route path="/equipments" element={<EquipmentList />} />
                     <Route path="/equipments/new" element={<EquipmentForm />} />
-                    <Route path="/equipments/:id" element={<EquipmentEdit />} />
+                    <Route path="/equipments/:id" element={<EquipmentView />} />
+                    <Route path="/equipments/:id/edit" element={<EquipmentEdit />} />
 
                     {/* RENTALS */}
                     <Route path="/rentals" element={<RentalsList />} />

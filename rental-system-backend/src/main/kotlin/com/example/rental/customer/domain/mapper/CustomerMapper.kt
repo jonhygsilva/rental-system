@@ -23,20 +23,7 @@ fun Customer.toJpaEntity(): CustomerJpaEntity {
         userId = userId
     )
 
-    addresses.forEach {
-        val addressJpa = AddressJpaEntity(
-            id = it.id,
-            street = it.street,
-            number = it.number,
-            complement = it.complement,
-            neighborhood = it.neighborhood,
-            city = it.city,
-            state = it.state,
-            zipCode = it.zipCode,
-            customer = customerJpa
-        )
-        customerJpa.addresses.add(addressJpa)
-    }
+    customerJpa.addresses.addAll(addresses.map { it.toJpaEntity(customerJpa) })
 
     return customerJpa
 }

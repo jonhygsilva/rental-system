@@ -9,9 +9,6 @@ import org.springframework.stereotype.Component
 import java.util.*
 import javax.crypto.SecretKey
 
-/**
- * Infrastructure adapter — JWT token generation and validation using JJWT.
- */
 @Component
 class JwtTokenAdapter(
     @Value("\${jwt.secret}") private val secret: String,

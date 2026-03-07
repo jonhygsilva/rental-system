@@ -4,7 +4,6 @@ import com.example.rental.customer.application.command.CreateAddressCommand
 import com.example.rental.customer.application.command.CreateCustomerCommand
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.Positive
 
 /**
  * DTO received from the REST layer.
@@ -20,13 +19,10 @@ data class CreateCustomerRequest(
     @field:NotBlank(message = "Phone is required")
     val phone: String,
 
-    @field:Positive(message = "userId must be a positive number")
-    val userId: Long,
-
     @field:Valid
     val addresses: List<CreateAddressRequest> = emptyList()
 ) {
-    fun toCommand() = CreateCustomerCommand(
+    fun toCommand(userId: Long) = CreateCustomerCommand(
         name = name.trim(),
         document = document.trim(),
         phone = phone.trim(),

@@ -1,6 +1,12 @@
 package com.example.rental.equipment.infrastructure.persistence.entity
 
-import jakarta.persistence.*
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import java.math.BigDecimal
 
 /**
@@ -10,7 +16,8 @@ import java.math.BigDecimal
 @Entity
 @Table(name = "equipamentos")
 data class EquipmentJpaEntity(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     val name: String = "",
     val type: String = "",

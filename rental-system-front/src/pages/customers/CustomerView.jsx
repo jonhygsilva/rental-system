@@ -7,24 +7,23 @@ import PageHeader from "../../components/PageHeader";
 import DeleteModal from "../../components/DeleteModal";
 import { Edit, Trash2 } from "lucide-react";
 import { extractApiError } from "../../utils/apiErrors";
-import { useAuth } from "../../context/AuthContext";
 
 export default function CustomerView() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+
 
   const [customer, setCustomer] = useState({});
   const [addresses, setAddresses] = useState([]);
   const [deleteModal, setDeleteModal] = useState(false); 
 
   useEffect(() => {
-    getCustomer(id, user.userId).then((res) => {
+    getCustomer(id).then((res) => {
       const data = res.data;
       setCustomer(data);
       setAddresses(data.addresses || []);
     });
-  }, [id, user.userId]);
+  }, [id]);
 
   return (
     <motion.div
@@ -167,7 +166,7 @@ export default function CustomerView() {
         message="Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita."
         onCancel={() => setDeleteModal(false)}
         onConfirm={() => {
-          deleteCustomer(id, user.userId)
+          deleteCustomer(id)
             .then(() => navigate("/customers"))
             .catch((err) => {
               alert(extractApiError(err, 'Erro ao excluir o cliente. Tente novamente.'));

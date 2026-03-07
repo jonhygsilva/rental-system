@@ -1,9 +1,10 @@
 package com.example.rental.customer.domain.model
 
-import com.example.rental.customer.domain.exception.DuplicateDocumentException
-import com.example.rental.customer.domain.mapper.toDomain
 import com.example.rental.customer.application.command.CreateCustomerCommand
 import com.example.rental.customer.application.usecase.validations.CustomerDocumentUniquenessChecker
+import com.example.rental.customer.domain.exception.DuplicateDocumentException
+import com.example.rental.customer.domain.mapper.toDomain
+import java.time.LocalDate
 
 data class Customer(
     val id: Long? = null,
@@ -11,6 +12,7 @@ data class Customer(
     var document: String,
     var phone: String,
     var userId: Long,
+    val createdAt: LocalDate,
     val addresses: MutableList<Address> = mutableListOf()
 ) {
 
@@ -33,12 +35,11 @@ data class Customer(
 
     fun changeDocument(newDocument: String, checker: CustomerDocumentUniquenessChecker) {
         if (this.document == newDocument) return
-        if (!checker.isUnique(newDocument)) throw DuplicateDocumentException(newDocument)
+        if (!checker.isUnique(newDocument, userId)) throw DuplicateDocumentException(newDocument)
         this.document = newDocument
     }
 
     fun documentAlreadyExists(checker: CustomerDocumentUniquenessChecker) {
-        if (!checker.isUnique(document)) throw DuplicateDocumentException(document)
+        if (!checker.isUnique(document, userId)) throw DuplicateDocumentException(document)
     }
 }
-

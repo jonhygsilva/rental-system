@@ -5,6 +5,6 @@ import com.example.rental.customer.application.port.output.CustomerPersistencePo
 class CustomerDocumentUniquenessCheckerImpl(
     private val persistencePort: CustomerPersistencePort
 ) : CustomerDocumentUniquenessChecker {
-    override fun isUnique(document: String): Boolean =
-        !persistencePort.existsByDocument(document)
+    override fun isUnique(document: String, userId: Long): Boolean =
+        !persistencePort.existsByDocumentAndUserId(document, userId)
 }

@@ -17,4 +17,3 @@ class PasswordEncoderAdapter : PasswordEncoderPort {
     override fun matches(rawPassword: String, encodedPassword: String): Boolean =
         encoder.matches(rawPassword, encodedPassword)
 }
-

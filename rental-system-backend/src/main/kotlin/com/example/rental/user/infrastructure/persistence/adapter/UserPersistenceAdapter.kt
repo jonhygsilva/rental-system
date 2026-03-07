@@ -1,10 +1,10 @@
 package com.example.rental.user.infrastructure.persistence.adapter
 
-import com.example.rental.user.infrastructure.persistence.repository.JpaUserRepository
+import com.example.rental.user.application.port.output.UserPersistencePort
 import com.example.rental.user.domain.mapper.toDomain
 import com.example.rental.user.domain.mapper.toJpaEntity
-import com.example.rental.user.application.port.output.UserPersistencePort
 import com.example.rental.user.domain.model.User
+import com.example.rental.user.infrastructure.persistence.repository.JpaUserRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 

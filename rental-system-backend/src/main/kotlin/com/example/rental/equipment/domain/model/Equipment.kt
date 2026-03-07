@@ -1,7 +1,5 @@
 package com.example.rental.equipment.domain.model
 
-import com.example.rental.customer.application.command.CreateCustomerCommand
-import com.example.rental.customer.domain.mapper.toDomain
 import com.example.rental.equipment.application.command.CreateEquipmentCommand
 import java.math.BigDecimal
 
@@ -38,4 +36,3 @@ data class Equipment(
 
     fun withStatus(newStatus: EquipmentStatus): Equipment = copy(status = newStatus)
 }
-

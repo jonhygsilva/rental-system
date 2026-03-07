@@ -7,11 +7,9 @@ import TableSkeleton from "../../components/TableSkeleton";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
-import { useAuth } from "../../context/AuthContext";
 
 export default function CustomerList() {
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("name,asc");
@@ -24,7 +22,7 @@ export default function CustomerList() {
 
   const fetch = useCallback(() => {
     setLoading(true);
-    getCustomers({ userId: user.userId, page, size, sort, search })
+    getCustomers({ page, size, sort, search })
       .then(res => {
         const data = res.data;
         setCustomers(data.content || data);

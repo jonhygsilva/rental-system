@@ -12,19 +12,16 @@ import {
   validateCustomer,
   validateAddress,
 } from "../../utils/inputHelpers";
-import { useAuth } from "../../context/AuthContext";
 
 export default function CustomerEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   // Estado inicial
   const [customer, setCustomer] = useState({
     name: "",
     document: "",
     phone: "",
-    userId: user.userId,
   });
 
   const [addresses, setAddresses] = useState([]);
@@ -72,14 +69,13 @@ export default function CustomerEdit() {
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
 
   useEffect(() => {
-    getCustomer(id, user.userId).then((res) => {
+    getCustomer(id).then((res) => {
       const data = res.data;
 
       const initialCustomer = {
         name: data.name,
         document: data.document,
         phone: data.phone,
-        userId: data.userId,
       };
 
       const initialAddresses =

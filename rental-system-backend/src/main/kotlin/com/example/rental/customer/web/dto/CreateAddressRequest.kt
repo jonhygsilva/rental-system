@@ -23,4 +23,3 @@ data class CreateAddressRequest(
     @field:NotBlank(message = "Zip code is required")
     val zipCode: String
 )
-

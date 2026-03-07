@@ -18,7 +18,6 @@ export default function EquipmentEdit() {
     dailyRate: "",
     latitude: "",
     longitude: "",
-    userId: 1,
   });
   const [errors, setErrors] = useState({});
   const nameRef = useRef(null);
@@ -34,7 +33,6 @@ export default function EquipmentEdit() {
         dailyRate: e.dailyRate,
         latitude: e.latitude ?? "",
         longitude: e.longitude ?? "",
-        userId: e.userId,
       });
       // images are omitted in first version
     });

@@ -6,17 +6,14 @@ import { motion } from "framer-motion";
 import Breadcrumbs from "../../shared/components/Breadcrumbs";
 import Card from "../../components/Card";
 import { extractApiError } from "../../utils/apiErrors";
-import { useAuth } from "../../context/AuthContext";
 
 export default function CustomerForm() {
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   const [customer, setCustomer] = useState({
     name: "",
     document: "",
     phone: "",
-    userId: user.userId,
   });
 
   const [addresses, setAddresses] = useState([

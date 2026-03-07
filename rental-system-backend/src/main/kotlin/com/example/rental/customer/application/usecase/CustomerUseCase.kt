@@ -1,28 +1,32 @@
 package com.example.rental.customer.application.usecase
 
-import com.example.rental.customer.application.port.output.CustomerPersistencePort
-import com.example.rental.customer.domain.exception.CustomerNotFoundException
-import com.example.rental.customer.domain.mapper.toDomain
+import com.example.rental.common.web.dto.PaginatedResponse
+import com.example.rental.customer.application.command.CreateCustomerCommand
+import com.example.rental.customer.application.port.input.CountCustomersByPeriodInput
 import com.example.rental.customer.application.port.input.CreateCustomerInput
 import com.example.rental.customer.application.port.input.DeleteCustomerInput
-import com.example.rental.customer.application.port.input.GetCustomerByIdInput
-import com.example.rental.customer.application.port.input.ListCustomersByUserInput
+import com.example.rental.customer.application.port.input.GetCustomersInput
 import com.example.rental.customer.application.port.input.UpdateCustomerInput
-import com.example.rental.customer.application.command.CreateCustomerCommand
-import com.example.rental.customer.web.dto.CustomerResponse
+import com.example.rental.customer.application.port.output.CustomerPersistencePort
 import com.example.rental.customer.application.usecase.validations.CustomerDocumentUniquenessCheckerImpl
+import com.example.rental.customer.domain.exception.CustomerNotFoundException
+import com.example.rental.customer.domain.mapper.toDomain
+import com.example.rental.customer.web.dto.CustomerResponse
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class CustomerUseCase(
     private val persistencePort: CustomerPersistencePort
 ) : CreateCustomerInput,
-    ListCustomersByUserInput,
-    GetCustomerByIdInput,
+    GetCustomersInput,
     UpdateCustomerInput,
-    DeleteCustomerInput {
+    DeleteCustomerInput,
+    CountCustomersByPeriodInput {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
@@ -41,26 +45,40 @@ class CustomerUseCase(
     }
 
     @Transactional(readOnly = true)
-    override fun listByUser(userId: Long): List<CustomerResponse> {
-        log.debug("Listing customers for userId: {}", userId)
+    override fun getCustomers(userId: Long, page: Int, size: Int, sort: String, search: String?, filters: Map<String, String>): PaginatedResponse<CustomerResponse> {
+        val parts = sort.split(",")
+        val field = parts.getOrNull(0) ?: "name"
+        val dir = parts.getOrNull(1)?.lowercase() ?: "asc"
+        val sortObj = if (dir == "desc") Sort.by(Sort.Direction.DESC, field) else Sort.by(Sort.Direction.ASC, field)
+        val pageable = PageRequest.of(page, size, sortObj)
 
-        return persistencePort.findByUserId(userId).map { CustomerResponse.from(it) }
+        val documentFilter = filters["document"]
+        val phoneFilter = filters["phone"]
+
+        val pageResult = persistencePort.findByUserIdWithFilters(userId, search, documentFilter, phoneFilter, pageable)
+
+        return PaginatedResponse(
+            content = pageResult.content.map { CustomerResponse.from(it) },
+            page = pageResult.number,
+            size = pageResult.size,
+            totalElements = pageResult.totalElements,
+            totalPages = pageResult.totalPages
+        )
     }
 
     @Transactional(readOnly = true)
-    override fun getById(id: Long): CustomerResponse {
+    override fun getCustomer(userId: Long, id: Long): CustomerResponse {
         log.debug("Fetching customer by id: {}", id)
 
-        val customer = persistencePort.findById(id)
+        val customer = persistencePort.findByIdAndUserId(id, userId)
             ?: customerNotFound(id)
 
         return CustomerResponse.from(customer)
     }
 
     @Transactional
-    override fun update(id: Long, command: CreateCustomerCommand): CustomerResponse {
-
-        val customer = persistencePort.findById(id)
+    override fun update(userId: Long, id: Long, command: CreateCustomerCommand): CustomerResponse {
+        val customer = persistencePort.findByIdAndUserId(id, userId)
             ?: customerNotFound(id)
 
         customer.changeDocument(
@@ -72,19 +90,25 @@ class CustomerUseCase(
 
         val saved = persistencePort.save(customer)
 
-        return CustomerResponse.from(saved,)
+        return CustomerResponse.from(saved)
     }
 
     @Transactional
-    override fun delete(id: Long) {
+    override fun delete(userId: Long, id: Long) {
         log.info("Deleting customer with id: {}", id)
 
-        val customer = persistencePort.findById(id)
+        val customer = persistencePort.findByIdAndUserId(id, userId)
             ?: customerNotFound(id)
 
-        persistencePort.deleteById(id)
+        persistencePort.deleteByIdAndUserId(id, userId)
 
         log.info("Deleted customer with id: {}", customer.id)
+    }
+
+    @Transactional(readOnly = true)
+    override fun count(userId: Long, start: LocalDateTime, end: LocalDateTime): Long {
+        log.debug("Counting customers for user {} between {} and {}", userId, start, end)
+        return persistencePort.countByUserIdAndCreatedAtBetween(userId, start, end)
     }
 
     private fun customerNotFound(id: Long): Nothing {

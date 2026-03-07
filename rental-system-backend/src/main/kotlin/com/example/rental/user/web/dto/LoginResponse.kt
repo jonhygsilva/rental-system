@@ -9,4 +9,3 @@ data class LoginResponse(
     val name: String,
     val email: String
 )
-

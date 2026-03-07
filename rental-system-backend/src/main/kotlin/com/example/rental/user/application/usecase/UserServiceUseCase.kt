@@ -9,7 +9,6 @@ import com.example.rental.user.application.port.output.UserPersistencePort
 import com.example.rental.user.domain.exception.InvalidCredentialsException
 import com.example.rental.user.domain.exception.UserAlreadyExistsException
 import com.example.rental.user.domain.mapper.toDomain
-import com.example.rental.user.domain.model.User
 import com.example.rental.user.web.dto.LoginRequest
 import com.example.rental.user.web.dto.LoginResponse
 import com.example.rental.user.web.dto.UserResponse

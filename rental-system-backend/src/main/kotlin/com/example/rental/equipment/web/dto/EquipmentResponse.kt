@@ -14,8 +14,7 @@ data class EquipmentResponse(
     val status: EquipmentStatus,
     val latitude: Double?,
     val longitude: Double?,
-    val dailyRate: BigDecimal,
-    val userId: Long
+    val dailyRate: BigDecimal
 ) {
     companion object {
         fun from(equipment: Equipment) = EquipmentResponse(
@@ -25,9 +24,7 @@ data class EquipmentResponse(
             status = equipment.status,
             latitude = equipment.latitude,
             longitude = equipment.longitude,
-            dailyRate = equipment.dailyRate,
-            userId = equipment.userId
+            dailyRate = equipment.dailyRate
         )
     }
 }
-

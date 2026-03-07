@@ -17,6 +17,7 @@ import RentalsList from "./pages/rentals/RentalsList";
 import RentalForm from "./pages/rentals/RentalForm";
 import RentalEdit from "./pages/rentals/RentalEdit";
 import RentalView from "./pages/rentals/RentalView";
+import Dashboard from "./pages/dashboard/Dashboard";
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
@@ -38,7 +39,6 @@ export default function App() {
                 <AppLayout>
                   <Routes>
                     {/* CUSTOMERS */}
-                    <Route path="/" element={<CustomerList />} />
                     <Route path="/customers" element={<CustomerList />} />
                     <Route path="/customers/new" element={<CustomerForm />} />
                     <Route path="/customers/:id/edit" element={<CustomerEdit />} />
@@ -49,6 +49,11 @@ export default function App() {
                     <Route path="/equipments/new" element={<EquipmentForm />} />
                     <Route path="/equipments/:id" element={<EquipmentView />} />
                     <Route path="/equipments/:id/edit" element={<EquipmentEdit />} />
+
+                    {/* DASHBOARD */}
+                    {/* DASHBOARD */}
+                    <Route index element={<Dashboard />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
 
                     {/* RENTALS */}
                     <Route path="/rentals" element={<RentalsList />} />

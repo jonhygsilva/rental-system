@@ -1,20 +1,20 @@
 package com.example.rental.customer.domain.mapper
 
-import com.example.rental.customer.infrastructure.persistence.entity.CustomerJpaEntity
-import com.example.rental.customer.domain.model.Customer
 import com.example.rental.customer.application.command.CreateCustomerCommand
-import com.example.rental.customer.infrastructure.persistence.entity.AddressJpaEntity
+import com.example.rental.customer.domain.model.Customer
+import com.example.rental.customer.infrastructure.persistence.entity.CustomerJpaEntity
+import java.time.LocalDate
 
 fun CreateCustomerCommand.toDomain() = Customer(
     name = name,
     document = document,
     phone = phone,
     userId = userId,
+    createdAt = LocalDate.now(),
     addresses = addresses.map { it.toDomain() }.toMutableList()
 )
 
 fun Customer.toJpaEntity(): CustomerJpaEntity {
-
     val customerJpa = CustomerJpaEntity(
         id = id,
         name = name,
@@ -35,5 +35,6 @@ fun CustomerJpaEntity.toDomain(): Customer =
         document = document,
         phone = phone,
         userId = userId,
+        createdAt = createdAt?.toLocalDate() ?: LocalDate.now(),
         addresses = addresses.map { it.toDomain() }.toMutableList()
     )

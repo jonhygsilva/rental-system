@@ -39,18 +39,18 @@ class JwtAuthenticationFilter(
         val token = authHeader.substring(7)
 
         if (jwtTokenPort.isTokenValid(token)) {
-            val email = jwtTokenPort.extractEmail(token)
+            val userId = jwtTokenPort.extractUserId(token)
 
-            if (email != null && SecurityContextHolder.getContext().authentication == null) {
-                val userEntity = userRepository.findByEmail(email)
+            if (userId != null && SecurityContextHolder.getContext().authentication == null) {
+                val userEntity = userRepository.findById(userId).orElse(null)
 
                 if (userEntity != null) {
                     val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
-                    val authToken = UsernamePasswordAuthenticationToken(email, null, authorities)
+                    val authToken = UsernamePasswordAuthenticationToken(userId, null, authorities)
                     authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                     SecurityContextHolder.getContext().authentication = authToken
 
-                    log.debug("Authenticated user: {}", email)
+                    log.debug("Authenticated user: {}", userId)
                 }
             }
         }
@@ -58,4 +58,3 @@ class JwtAuthenticationFilter(
         filterChain.doFilter(request, response)
     }
 }
-

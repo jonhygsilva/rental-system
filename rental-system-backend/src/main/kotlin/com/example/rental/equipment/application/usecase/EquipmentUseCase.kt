@@ -1,26 +1,22 @@
 package com.example.rental.equipment.application.usecase
 
+import com.example.rental.equipment.application.command.CreateEquipmentCommand
 import com.example.rental.equipment.application.port.input.CreateEquipmentInput
-import com.example.rental.equipment.application.port.input.GetEquipmentByIdInput
-import com.example.rental.equipment.application.port.input.ListEquipmentByUserInput
-import com.example.rental.equipment.application.port.input.UpdateEquipmentStatusInput
+import com.example.rental.equipment.application.port.input.GetEquipmentsInput
+import com.example.rental.equipment.application.port.input.UpdateEquipmentsInput
 import com.example.rental.equipment.application.port.output.EquipmentPersistencePort
 import com.example.rental.equipment.domain.exception.EquipmentNotFoundException
-import com.example.rental.equipment.domain.model.EquipmentStatus
-import com.example.rental.equipment.application.command.CreateEquipmentCommand
-import com.example.rental.equipment.application.port.input.UpdateEquipmentInput
 import com.example.rental.equipment.domain.mapper.toDomain
+import com.example.rental.equipment.domain.model.EquipmentStatus
 import com.example.rental.equipment.web.dto.EquipmentResponse
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-
 @Service
 class EquipmentUseCase(
     private val persistencePort: EquipmentPersistencePort
-) : CreateEquipmentInput, ListEquipmentByUserInput, UpdateEquipmentStatusInput, GetEquipmentByIdInput,
-    UpdateEquipmentInput {
+) : CreateEquipmentInput, GetEquipmentsInput, UpdateEquipmentsInput {
 
     private val log = LoggerFactory.getLogger(EquipmentUseCase::class.java)
 
@@ -34,15 +30,14 @@ class EquipmentUseCase(
     }
 
     @Transactional(readOnly = true)
-    override fun listByUser(userId: Long): List<EquipmentResponse> {
-        log.debug("Listing equipment for userId: {}", userId)
+    override fun getEquipments(userId: Long): List<EquipmentResponse> {
         return persistencePort.findByUserId(userId).map { EquipmentResponse.from(it) }
     }
 
     @Transactional
-    override fun updateStatus(id: Long, status: EquipmentStatus): EquipmentResponse {
+    override fun updateStatus(userId: Long, id: Long, status: EquipmentStatus): EquipmentResponse {
         log.info("Updating equipment {} status to {}", id, status)
-        val equipment = persistencePort.findById(id) ?: equipmentNotFound(id)
+        val equipment = persistencePort.findByIdAndUserId(id, userId) ?: equipmentNotFound(id)
 
         val updated = persistencePort.save(equipment.withStatus(status))
         log.info("Equipment {} status updated to {}", id, updated.status)
@@ -50,17 +45,18 @@ class EquipmentUseCase(
     }
 
     @Transactional(readOnly = true)
-    override fun getById(id: Long): EquipmentResponse {
-        val equipment = persistencePort.findById(id) ?: equipmentNotFound(id)
+    override fun getEquipment(userId: Long, id: Long): EquipmentResponse {
+        val equipment = persistencePort.findByIdAndUserId(id, userId) ?: equipmentNotFound(id)
         return EquipmentResponse.from(equipment)
     }
 
     override fun update(
+        userId: Long,
         id: Long,
         command: CreateEquipmentCommand
     ): EquipmentResponse {
         log.info("Updating equipment {} with new values", id)
-        val equipment = persistencePort.findById(id) ?: equipmentNotFound(id)
+        val equipment = persistencePort.findByIdAndUserId(id, userId) ?: equipmentNotFound(id)
 
         equipment.updateFrom(command)
 

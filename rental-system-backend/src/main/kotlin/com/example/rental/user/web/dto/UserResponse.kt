@@ -18,4 +18,3 @@ data class UserResponse(
         )
     }
 }
-

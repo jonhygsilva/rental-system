@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getRentals, deleteRental } from '../../mocks/mockApi';
+import { getRentals, deleteRental } from './api/RentalsApi';
 import RentalTable from '../../components/RentalTable';
 import DeleteModal from '../../components/DeleteModal';
 import { Link } from 'react-router-dom';

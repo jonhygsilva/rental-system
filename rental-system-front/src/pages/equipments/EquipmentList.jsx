@@ -5,21 +5,14 @@ import { Link } from "react-router-dom";
 import EquipmentTable from "./components/EquipmentTable";
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
-import { useAuth } from "../../context/AuthContext";
 
 
 export default function EquipmentList() {
   const [equipments, setEquipments] = useState([]);
   const [deleteId, setDeleteId] = useState(null);
-  const { user } = useAuth();
 
-  const load = (uid = user?.userId) => {
-    if (!uid) {
-      setEquipments([]);
-      return Promise.resolve();
-    }
-
-    return getEquipments(uid)
+  const load = () => {
+    return getEquipments()
       .then((res) => setEquipments(res.data || []))
       .catch((err) => {
         console.error("Erro ao carregar equipamentos:", err);
@@ -28,8 +21,8 @@ export default function EquipmentList() {
   };
 
   useEffect(() => {
-    if (user?.userId) load(user.userId);
-  }, [user?.userId]);
+    load();
+  }, []);
 
   return (
     <motion.div className="p-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }}>

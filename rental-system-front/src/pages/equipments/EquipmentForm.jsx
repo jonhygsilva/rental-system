@@ -17,7 +17,6 @@ export default function EquipmentForm() {
     dailyRate: "",
     latitude: "",
     longitude: "",
-    userId: 1,
   });
   const [errors, setErrors] = useState({});
   const nameRef = useRef(null);

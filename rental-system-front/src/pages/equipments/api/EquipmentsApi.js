@@ -2,9 +2,9 @@ import api from "../../../shared/api/axiosInstance";
 
 const BASE = "/api/equipments";
 
-export const getEquipments = (userId) => {
-    console.log("Fetching equipments for userId:", userId);
-    return api.get(BASE, { params: { userId } })
+export const getEquipments = ({ page = 0, size = 10, sort = "name,asc", search = "" } = {}) => {
+  const params = { page, size, sort, search };
+  return api.get(BASE, { params });
 };
 export const getEquipment = (id) => api.get(`${BASE}/${id}`);
 export const createEquipment = (data) => api.post(BASE, data);

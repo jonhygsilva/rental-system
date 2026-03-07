@@ -7,4 +7,5 @@ interface JwtTokenPort {
     fun generateToken(userId: Long, email: String): String
     fun extractEmail(token: String): String?
     fun isTokenValid(token: String): Boolean
+    fun extractUserId(token: String): Long?
 }

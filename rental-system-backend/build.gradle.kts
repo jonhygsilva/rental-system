@@ -1,9 +1,11 @@
 plugins {
     id("org.springframework.boot") version "3.4.3"
     id("io.spring.dependency-management") version "1.1.7"
-    kotlin("jvm") version "2.1.10"
-    kotlin("plugin.spring") version "2.1.10"
-    kotlin("plugin.jpa") version "2.1.10"
+    kotlin("jvm") version "1.9.22"
+    kotlin("plugin.spring") version "1.9.22"
+    kotlin("plugin.jpa") version "1.9.22"
+    // ktlint plugin for Kotlin linting and formatting
+    id("org.jlleitschuh.gradle.ktlint") version "11.6.0"
 }
 
 group = "com.example"
@@ -32,6 +34,22 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
+}
+
+// ktlint plugin configuration
+ktlint {
+    // let the plugin pick a compatible ktlint version
+    debug.set(false)
+    android.set(false)
+    outputToConsole.set(true)
+    ignoreFailures.set(false) // fail the build on ktlint errors
+    reporters {
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
+    }
+    filter {
+        exclude("**/generated/**")
     }
 }
 

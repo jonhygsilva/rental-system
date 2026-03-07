@@ -1,5 +1,5 @@
 package com.example.rental.customer.application.usecase.validations
 
 interface CustomerDocumentUniquenessChecker {
-    fun isUnique(document: String): Boolean
+    fun isUnique(document: String, userId: Long): Boolean
 }

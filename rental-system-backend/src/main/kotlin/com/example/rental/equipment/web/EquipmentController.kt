@@ -1,20 +1,25 @@
 package com.example.rental.equipment.web
 
-import com.example.rental.customer.web.dto.CreateCustomerRequest
-import com.example.rental.customer.web.dto.CustomerResponse
+import com.example.rental.dashboard.application.port.input.GetEquipmentStatsInput
+import com.example.rental.equipment.application.port.input.CreateEquipmentInput
+import com.example.rental.equipment.application.port.input.GetEquipmentsInput
+import com.example.rental.equipment.application.port.input.UpdateEquipmentsInput
+import com.example.rental.equipment.domain.model.EquipmentStatus
 import com.example.rental.equipment.web.dto.CreateEquipmentRequest
 import com.example.rental.equipment.web.dto.EquipmentResponse
-import com.example.rental.equipment.application.port.input.CreateEquipmentInput
-import com.example.rental.equipment.application.port.input.GetEquipmentByIdInput
-import com.example.rental.equipment.application.port.input.ListEquipmentByUserInput
-import com.example.rental.equipment.application.port.input.UpdateEquipmentInput
-import com.example.rental.equipment.application.port.input.UpdateEquipmentStatusInput
-import com.example.rental.equipment.domain.model.EquipmentStatus
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 /**
  * Inbound REST adapter — thin layer that delegates to use-case ports.
@@ -24,48 +29,54 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/equipments")
 class EquipmentController(
     private val createEquipmentInput: CreateEquipmentInput,
-    private val listEquipmentByUserInput: ListEquipmentByUserInput,
-    private val updateEquipmentStatusInput: UpdateEquipmentStatusInput,
-    private val getEquipmentByIdInput: GetEquipmentByIdInput,
-    private val updateEquipmentInput: UpdateEquipmentInput
+    private val getEquipmentsInput: GetEquipmentsInput,
+    private val updateEquipmentsInput: UpdateEquipmentsInput,
+    private val getEquipmentStatsInput: GetEquipmentStatsInput
 ) {
 
     private val log = LoggerFactory.getLogger(EquipmentController::class.java)
 
     @PostMapping
-    fun create(@Valid @RequestBody request: CreateEquipmentRequest): ResponseEntity<EquipmentResponse> {
-        log.info("POST /api/equipamentos — name: {}", request.name)
-        val response = createEquipmentInput.execute(request.toCommand())
+    fun create(
+        @AuthenticationPrincipal userId: Long,
+        @Valid @RequestBody
+        request: CreateEquipmentRequest
+    ): ResponseEntity<EquipmentResponse> {
+        log.info("POST /api/equipments — name: {}", request.name)
+        val response = createEquipmentInput.execute(request.toCommand(userId))
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
     @GetMapping
-    fun listByUser(@RequestParam userId: Long): ResponseEntity<List<EquipmentResponse>> {
+    fun getEquipments(@AuthenticationPrincipal userId: Long): ResponseEntity<List<EquipmentResponse>> {
         log.info("GET /api/equipamentos?userId={}", userId)
-        return ResponseEntity.ok(listEquipmentByUserInput.listByUser(userId))
+        return ResponseEntity.ok(getEquipmentsInput.getEquipments(userId))
     }
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: Long): ResponseEntity<EquipmentResponse> {
+    fun getEquipment(@AuthenticationPrincipal userId: Long, @PathVariable id: Long): ResponseEntity<EquipmentResponse> {
         log.info("GET /api/equipamentos/{}", id)
-        return ResponseEntity.ok(getEquipmentByIdInput.getById(id))
+        return ResponseEntity.ok(getEquipmentsInput.getEquipment(userId, id))
     }
 
     @PatchMapping("/{id}/status")
     fun updateStatus(
+        @AuthenticationPrincipal userId: Long,
         @PathVariable id: Long,
-        @RequestParam status: EquipmentStatus
+        @RequestBody status: EquipmentStatus
     ): ResponseEntity<EquipmentResponse> {
         log.info("PATCH /api/equipamentos/{}/status — status: {}", id, status)
-        return ResponseEntity.ok(updateEquipmentStatusInput.updateStatus(id, status))
+        return ResponseEntity.ok(updateEquipmentsInput.updateStatus(userId, id, status))
     }
 
     @PutMapping("/{id}")
     fun update(
+        @AuthenticationPrincipal userId: Long,
         @PathVariable id: Long,
-        @Valid @RequestBody request: CreateEquipmentRequest
+        @Valid @RequestBody
+        request: CreateEquipmentRequest
     ): ResponseEntity<EquipmentResponse> {
-        val response = updateEquipmentInput.update(id, request.toCommand())
+        val response = updateEquipmentsInput.update(userId, id, request.toCommand(userId))
         return ResponseEntity.ok(response)
     }
 }

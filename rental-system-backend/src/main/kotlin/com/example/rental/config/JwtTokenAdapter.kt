@@ -50,6 +50,21 @@ class JwtTokenAdapter(
         }
     }
 
+    override fun extractUserId(token: String): Long? {
+        return try {
+            val claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .payload
+
+            claims["userId"]?.toString()?.toLong()
+        } catch (ex: Exception) {
+            log.warn("Failed to extract userId from token: {}", ex.message)
+            null
+        }
+    }
+
     override fun isTokenValid(token: String): Boolean {
         return try {
             Jwts.parser()

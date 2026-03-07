@@ -19,12 +19,9 @@ data class CreateEquipmentRequest(
     val longitude: Double? = null,
 
     @field:Positive(message = "Daily rate must be positive")
-    val dailyRate: BigDecimal,
-
-    @field:Positive(message = "userId must be a positive number")
-    val userId: Long
+    val dailyRate: BigDecimal
 ) {
-    fun toCommand() = CreateEquipmentCommand(
+    fun toCommand(userId: Long) = CreateEquipmentCommand(
         name = name.trim(),
         type = type.trim(),
         latitude = latitude,

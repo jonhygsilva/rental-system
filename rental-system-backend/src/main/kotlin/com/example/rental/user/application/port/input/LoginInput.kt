@@ -9,4 +9,3 @@ import com.example.rental.user.web.dto.LoginResponse
 fun interface LoginInput {
     fun execute(request: LoginRequest): LoginResponse
 }
-

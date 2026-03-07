@@ -13,7 +13,8 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "users")
 data class UserJpaEntity(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     val name: String = "",
     val email: String = "",

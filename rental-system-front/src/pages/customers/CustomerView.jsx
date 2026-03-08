@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCustomer, deleteCustomer } from "./api/customersApi";
+import { getCustomer, deleteCustomer } from "./api/CustomersApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import Breadcrumbs from "../../shared/components/Breadcrumbs";

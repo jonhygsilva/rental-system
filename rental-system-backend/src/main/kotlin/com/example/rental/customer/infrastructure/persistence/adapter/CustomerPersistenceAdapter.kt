@@ -4,10 +4,13 @@ import com.example.rental.customer.application.port.output.CustomerPersistencePo
 import com.example.rental.customer.domain.mapper.toDomain
 import com.example.rental.customer.domain.mapper.toJpaEntity
 import com.example.rental.customer.domain.model.Customer
+import com.example.rental.customer.infrastructure.persistence.entity.CustomerJpaEntity
 import com.example.rental.customer.infrastructure.persistence.repository.JpaCustomerRepository
+import jakarta.persistence.criteria.Predicate
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
@@ -39,8 +42,46 @@ class CustomerPersistenceAdapter(
     override fun countByUserId(userId: Long): Long =
         jpaRepository.countByUserId(userId)
 
-    override fun findByUserIdWithFilters(userId: Long, search: String?, document: String?, phone: String?, pageable: Pageable): Page<Customer> {
-        val page = jpaRepository.findByUserIdWithFilters(userId, search, document, phone, pageable)
-        return PageImpl(page.content.map { it.toDomain() }, pageable, page.totalElements)
+    override fun findByUserIdWithFilters(
+        userId: Long,
+        search: String?,
+        document: String?,
+        phone: String?,
+        pageable: Pageable
+    ): Page<Customer> {
+
+        val spec = Specification<CustomerJpaEntity> { root, query, cb ->
+            val predicates = mutableListOf<Predicate>()
+
+            // 1. Filtro obrigatório por UserId
+            predicates.add(cb.equal(root.get<Long>("userId"), userId))
+
+            // 2. Filtro de busca global (OR)
+            search?.takeIf { it.isNotBlank() }?.let {
+                val searchLower = "%${it.lowercase()}%"
+                predicates.add(
+                    cb.or(
+                        cb.like(cb.lower(root.get("name")), searchLower),
+                        cb.like(cb.lower(root.get("document")), searchLower),
+                        cb.like(cb.lower(root.get("phone")), searchLower)
+                    )
+                )
+            }
+
+            // 3. Filtros específicos (AND)
+            document?.takeIf { it.isNotBlank() }?.let {
+                predicates.add(cb.equal(root.get<String>("document"), it))
+            }
+            phone?.takeIf { it.isNotBlank() }?.let {
+                predicates.add(cb.equal(root.get<String>("phone"), it))
+            }
+
+            cb.and(*predicates.toTypedArray())
+        }
+
+        // Chama o findAll passando a Specification
+        val page = jpaRepository.findAll(spec, pageable)
+
+        return page.map { it.toDomain() } // O Spring Data já tem o .map direto na Page!
     }
 }

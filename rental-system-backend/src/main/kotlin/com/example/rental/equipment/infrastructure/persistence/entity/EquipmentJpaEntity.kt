@@ -11,10 +11,10 @@ import java.math.BigDecimal
 
 /**
  * JPA entity — infrastructure concern only.
- * Maps to the "equipamentos" table.
+ * Maps to the "equipment" table.
  */
 @Entity
-@Table(name = "equipamentos")
+@Table(name = "equipment")
 data class EquipmentJpaEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

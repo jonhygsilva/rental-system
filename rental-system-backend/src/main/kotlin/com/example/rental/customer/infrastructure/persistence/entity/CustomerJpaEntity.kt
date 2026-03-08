@@ -12,7 +12,7 @@ import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
 
 @Entity
-@Table(name = "clientes")
+@Table(name = "customers")
 class CustomerJpaEntity(
 
     @Id

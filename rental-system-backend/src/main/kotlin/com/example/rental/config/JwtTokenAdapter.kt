@@ -18,7 +18,8 @@ class JwtTokenAdapter(
     private val log = LoggerFactory.getLogger(JwtTokenAdapter::class.java)
 
     private val key: SecretKey by lazy {
-        Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret))
+        val raw = secret.toByteArray(Charsets.UTF_8)
+        Keys.hmacShaKeyFor(raw)
     }
 
     override fun generateToken(userId: Long, email: String): String {

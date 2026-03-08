@@ -5,13 +5,14 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import java.time.LocalDateTime
 
 /**
  * Spring Data JPA repository — infrastructure concern.
  */
-interface JpaCustomerRepository : JpaRepository<CustomerJpaEntity, Long> {
+interface JpaCustomerRepository : JpaRepository<CustomerJpaEntity, Long>, JpaSpecificationExecutor<CustomerJpaEntity> {
     @EntityGraph(attributePaths = ["addresses"])
     fun findByUserId(userId: Long): List<CustomerJpaEntity>
     fun findByIdAndUserId(id: Long, userId: Long): CustomerJpaEntity?
@@ -26,7 +27,7 @@ interface JpaCustomerRepository : JpaRepository<CustomerJpaEntity, Long> {
     fun countByUserId(userId: Long): Long
 
     @Query(
-        "" +
+        ""+
             "SELECT c FROM CustomerJpaEntity c " +
             "WHERE c.userId = :userId " +
             "AND (:search IS NULL OR (LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(c.document) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(c.phone) LIKE LOWER(CONCAT('%', :search, '%')))) " +

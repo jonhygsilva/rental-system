@@ -27,10 +27,17 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
     runtimeOnly("com.h2database:h2")
+    // PostgreSQL driver for production profile
+    runtimeOnly("org.postgresql:postgresql:42.6.0")
+    // Flyway for database migrations
+    implementation("org.flywaydb:flyway-core:9.22.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 kotlin {
+    // Use Kotlin's JVM toolchain to force Java 17 for compilation (avoids parsing host JDK 25.x)
+    jvmToolchain(17)
+
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)

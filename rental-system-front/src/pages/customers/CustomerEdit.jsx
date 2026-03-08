@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { getCustomer, updateCustomer } from "./api/customersApi";
+import { getCustomer, updateCustomer } from "./api/CustomersApi";
 import { useNavigate, useParams } from "react-router-dom";
 import Breadcrumbs from "../../shared/components/Breadcrumbs";
 import Card from "../../components/Card";
